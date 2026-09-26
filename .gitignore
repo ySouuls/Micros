@@ -1,0 +1,46 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Banco de dados local
+database/*.db
+
+# Uploads de teste da API
+api/uploads/*
+!api/uploads/.gitkeep
+
+# Flutter/Dart
+mobile/build/
+mobile/.dart_tool/
+mobile/android/.gradle/
+mobile/android/.kotlin/
+mobile/android/local.properties
+mobile/**/.idea/
+*.iml
+
+# Resultados de treino/predição do YOLO
+runs/
+resultados/
+
+# Site publicado (gerado no build do Docker, não versionado)
+web/
+
+# Bagunça solta da extração do zip do Yuri (o modelo treinado já foi
+# copiado pra ia/models/, esses dados brutos não são necessários pro app)
+dados/
+codigos/
+experimentos/
+modelos/
+configuracoes/
+backup_dados_antigos/
+
+# Checkpoints genéricos baixados automaticamente pelo Ultralytics
+# (o app usa os modelos treinados em ia/models/, não estes)
+/yolo11n.pt
+/yolo11n-cls.pt
+
+# Cache de treino do Ultralytics (regenerado automaticamente)
+*.cache
+
+# Ferramenta baixada à parte (não é código do projeto)
+scripts/cloudflared.exe

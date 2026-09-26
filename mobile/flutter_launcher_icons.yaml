@@ -1,0 +1,8 @@
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icone.png"
+
+  # Configuração para o ícone adaptativo do Android
+  adaptive_icon_background: "#000000" # Troque pelo hexadecimal da cor do seu fundo
+  adaptive_icon_foreground: "assets/images/icone.png"
