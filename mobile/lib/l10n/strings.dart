@@ -180,8 +180,8 @@ const Map<String, Map<String, String>> _strings = {
     'pt': 'Toque para selecionar uma imagem',
     'en': 'Tap to select an image',
   },
-  'counting_spores': {'pt': 'Contando fungos...', 'en': 'Counting fungi...'},
-  'spores_found': {'pt': 'fungos encontrados', 'en': 'fungi found'},
+  'counting_spores': {'pt': 'Contando esporos...', 'en': 'Counting spores...'},
+  'spores_found': {'pt': 'esporos encontrados', 'en': 'spores found'},
   'count_another_image': {'pt': 'Contar outra imagem', 'en': 'Count another image'},
   'count_error': {'pt': 'Erro ao contar', 'en': 'Error counting'},
 

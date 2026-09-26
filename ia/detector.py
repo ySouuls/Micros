@@ -10,10 +10,8 @@ def detectar(imagem):
 
     resultados = model.predict(
         source=imagem,
-        save=True,
-        project="resultados",
-        name="deteccoes",
-        exist_ok=True
+        save=False,
+        verbose=False,
     )
 
     probs = resultados[0].probs

@@ -42,5 +42,12 @@ Future<XFile?> selecionarImagem(BuildContext context) async {
 
   if (source == null) return null;
 
-  return ImagePicker().pickImage(source: source, imageQuality: 100);
+  // Reduzimos o tamanho aqui: os modelos de IA usam imagens bem menores
+  // internamente (224 a 640px), então mandar a foto em resolução original
+  // da câmera só deixa o upload e o processamento mais lentos à toa.
+  return ImagePicker().pickImage(
+    source: source,
+    maxWidth: 1280,
+    imageQuality: 85,
+  );
 }

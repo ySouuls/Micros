@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -84,7 +85,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       imageQuality: 80,
     );
 
-    if (image != null) {
+    if (image == null) return;
+
+    if (kIsWeb) {
+      // No navegador guardamos os bytes (data URI), já que a blob: URL do
+      // image_picker some assim que a página é recarregada.
+      final bytes = await image.readAsBytes();
+      final base64 = base64Encode(bytes);
+      await _salvarFoto('data:image/jpeg;base64,$base64');
+    } else {
       await _salvarFoto(image.path);
     }
   }

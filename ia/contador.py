@@ -11,10 +11,8 @@ def contar(imagem):
     resultados = model_contagem.predict(
         source=imagem,
         conf=CONFIANCA_MINIMA_CONTAGEM,
-        save=True,
-        project="resultados",
-        name="contagens",
-        exist_ok=True
+        save=False,
+        verbose=False,
     )
 
     caixas = resultados[0].boxes
