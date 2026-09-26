@@ -22,8 +22,10 @@ mobile/**/.idea/
 runs/
 resultados/
 
-# Site publicado (gerado no build do Docker, não versionado)
-web/
+# Site publicado (gerado no build do Docker, não versionado).
+# Barra na frente = só a pasta "web" da raiz, não a mobile/web/ (código-fonte
+# da versão Flutter Web, que precisa continuar rastreada).
+/web/
 
 # Bagunça solta da extração do zip do Yuri (o modelo treinado já foi
 # copiado pra ia/models/, esses dados brutos não são necessários pro app)
