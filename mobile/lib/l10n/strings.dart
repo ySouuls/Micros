@@ -196,6 +196,22 @@ const Map<String, Map<String, String>> _strings = {
   },
   'confidence': {'pt': 'Confiança', 'en': 'Confidence'},
 
+  // Ficha de critérios científicos
+  'scientific_criteria_title': {'pt': 'Critérios científicos de referência', 'en': 'Reference scientific criteria'},
+  'criteria_mode': {'pt': 'Modo de formação', 'en': 'Mode of formation'},
+  'criteria_diameter': {'pt': 'Diâmetro do esporo', 'en': 'Spore diameter'},
+  'criteria_color': {'pt': 'Cor', 'en': 'Color'},
+  'criteria_wall': {'pt': 'Parede do esporo', 'en': 'Spore wall'},
+  'criteria_distinctive': {'pt': 'Característica distintiva', 'en': 'Distinctive feature'},
+  'criteria_disclaimer': {
+    'pt': 'Use como apoio para conferência manual: nem todos os critérios do artigo dá pra confirmar só pela foto (alguns exigem lâmina com o esporo esmagado e reagente de Melzer).',
+    'en': 'Use as support for manual review: not every criterion in the article can be confirmed from the photo alone (some require a crushed-mount slide with Melzer\'s reagent).',
+  },
+  'criteria_source': {
+    'pt': 'Fonte: Stürmer et al. (2026), Mycorrhiza 36:37 — doi.org/10.1007/s00572-026-01270-7',
+    'en': 'Source: Stürmer et al. (2026), Mycorrhiza 36:37 — doi.org/10.1007/s00572-026-01270-7',
+  },
+
   // Chat Juliano
   'skip': {'pt': 'PULAR', 'en': 'SKIP'},
   'juliano_under_development': {

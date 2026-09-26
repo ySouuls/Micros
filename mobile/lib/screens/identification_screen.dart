@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../data/especie_info.dart';
 import '../l10n/strings.dart';
 import '../services/api_service.dart';
 import '../widgets/image_source_sheet.dart';
@@ -54,6 +55,88 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
     if (confianca >= 70) return const Color(0xFF22C55E);
     if (confianca >= 40) return const Color(0xFFF59E0B);
     return const Color(0xFFEF4444);
+  }
+
+  Widget _fichaCriterios(ThemeData theme, Map<String, dynamic> especie) {
+    final info = especiesInfo[especie["classe"].toString()];
+    if (info == null) return const SizedBox.shrink();
+
+    final lang = LocaleScope.of(context).languageCode;
+    String campo(Map<String, String> valores) =>
+        valores[lang] ?? valores['pt'] ?? '';
+
+    Widget linha(String rotulo, String valor) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              rotulo,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(valor, style: theme.textTheme.bodyMedium),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.menu_book_rounded,
+                  color: Color(0xFF22C55E), size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  tr(context, 'scientific_criteria_title'),
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          linha(tr(context, 'criteria_mode'), campo(info.modo)),
+          linha(tr(context, 'criteria_diameter'), campo(info.diametro)),
+          linha(tr(context, 'criteria_color'), campo(info.cor)),
+          linha(tr(context, 'criteria_wall'), campo(info.parede)),
+          linha(tr(context, 'criteria_distinctive'),
+              campo(info.caracteristica)),
+          const SizedBox(height: 4),
+          Text(
+            tr(context, 'criteria_disclaimer'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontStyle: FontStyle.italic,
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            tr(context, 'criteria_source'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _imagemWidget() {
@@ -207,6 +290,7 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
                         ],
                       ),
               ),
+            if (especie != null) _fichaCriterios(theme, especie),
             if (_imagem != null && !_carregando) ...[
               const SizedBox(height: 20),
               TextButton.icon(
