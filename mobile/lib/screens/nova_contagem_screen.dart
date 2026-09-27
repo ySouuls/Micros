@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../l10n/strings.dart';
 import '../services/api_service.dart';
+import '../services/pdf_report_service.dart';
 import '../widgets/image_source_sheet.dart';
 
 Future<Size> _tamanhoDaImagem(XFile imagem) async {
@@ -14,6 +15,46 @@ Future<Size> _tamanhoDaImagem(XFile imagem) async {
   final codec = await ui.instantiateImageCodec(bytes);
   final frame = await codec.getNextFrame();
   return Size(frame.image.width.toDouble(), frame.image.height.toDouble());
+}
+
+/// Desenha as caixinhas de detecção direto em cima da imagem original
+/// (coordenadas já vêm em pixels da imagem, sem precisar de ajuste de
+/// escala como no CustomPaint da tela).
+Future<Uint8List> _imagemComCaixas(
+  Uint8List imagemBytes,
+  Size tamanhoOriginal,
+  List deteccoes,
+) async {
+  final codec = await ui.instantiateImageCodec(imagemBytes);
+  final frame = await codec.getNextFrame();
+  final imagem = frame.image;
+
+  final recorder = ui.PictureRecorder();
+  final canvas = Canvas(recorder);
+  canvas.drawImage(imagem, Offset.zero, Paint());
+
+  final paint = Paint()
+    ..color = const Color(0xFF22C55E)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 4;
+
+  for (final det in deteccoes) {
+    final rect = Rect.fromLTRB(
+      (det["x1"] ?? 0).toDouble(),
+      (det["y1"] ?? 0).toDouble(),
+      (det["x2"] ?? 0).toDouble(),
+      (det["y2"] ?? 0).toDouble(),
+    );
+    canvas.drawRect(rect, paint);
+  }
+
+  final picture = recorder.endRecording();
+  final composta = await picture.toImage(
+    tamanhoOriginal.width.toInt(),
+    tamanhoOriginal.height.toInt(),
+  );
+  final bytes = await composta.toByteData(format: ui.ImageByteFormat.png);
+  return bytes!.buffer.asUint8List();
 }
 
 class NovaContagemScreen extends StatefulWidget {
@@ -29,6 +70,7 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
   XFile? _imagem;
   Size? _tamanhoOriginal;
   bool _carregando = false;
+  bool _gerandoPdf = false;
   String? _erro;
   Map<String, dynamic>? _resultado;
 
@@ -59,6 +101,29 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
         _erro = e.toString();
         _carregando = false;
       });
+    }
+  }
+
+  Future<void> _baixarRelatorio(int quantidade, List deteccoes) async {
+    if (_imagem == null) return;
+
+    setState(() => _gerandoPdf = true);
+    try {
+      final bytesOriginais = await _imagem!.readAsBytes();
+      final bytesFinais = (deteccoes.isNotEmpty && _tamanhoOriginal != null)
+          ? await _imagemComCaixas(bytesOriginais, _tamanhoOriginal!, deteccoes)
+          : bytesOriginais;
+
+      await PdfReportService.gerar(
+        titulo: tr(context, 'report_title_count'),
+        imagemBytes: bytesFinais,
+        campos: [
+          MapEntry(tr(context, 'report_field_file'), _imagem!.name),
+          MapEntry(tr(context, 'spores_found'), "$quantidade"),
+        ],
+      );
+    } finally {
+      if (mounted) setState(() => _gerandoPdf = false);
     }
   }
 
@@ -178,8 +243,33 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
                   ],
                 ),
               ),
+            if (_resultado != null && _erro == null && !_carregando) ...[
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: _gerandoPdf
+                    ? null
+                    : () => _baixarRelatorio(quantidade, deteccoes),
+                icon: _gerandoPdf
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.picture_as_pdf_rounded,
+                        color: Color(0xFF22C55E)),
+                label: Text(
+                  tr(context, 'download_report'),
+                  style: const TextStyle(
+                      color: Color(0xFF22C55E), fontWeight: FontWeight.bold),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF22C55E)),
+                  minimumSize: const Size(double.infinity, 46),
+                ),
+              ),
+            ],
             if (_imagem != null && !_carregando) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               TextButton.icon(
                 onPressed: _selecionarEContar,
                 icon:

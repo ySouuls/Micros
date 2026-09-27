@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../data/especie_info.dart';
 import '../l10n/strings.dart';
 import '../services/api_service.dart';
+import '../services/pdf_report_service.dart';
 import '../widgets/image_source_sheet.dart';
 
 class IdentificationScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
 
   XFile? _imagem;
   bool _carregando = false;
+  bool _gerandoPdf = false;
   String? _erro;
   Map<String, dynamic>? _resultado;
 
@@ -48,6 +50,54 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
         _erro = e.toString();
         _carregando = false;
       });
+    }
+  }
+
+  Future<void> _baixarRelatorio(
+    Map<String, dynamic>? especie,
+    num confianca,
+  ) async {
+    if (_imagem == null) return;
+
+    setState(() => _gerandoPdf = true);
+    try {
+      final bytes = await _imagem!.readAsBytes();
+      final lang = LocaleScope.of(context).languageCode;
+      String campo(Map<String, String> valores) =>
+          valores[lang] ?? valores['pt'] ?? '';
+
+      final campos = <MapEntry<String, String>>[
+        MapEntry(tr(context, 'report_field_file'), _imagem!.name),
+        MapEntry(
+          tr(context, 'report_field_result'),
+          especie == null
+              ? tr(context, 'no_species_identified')
+              : especie["classe"].toString().replaceAll('_', ' '),
+        ),
+        if (especie != null) MapEntry(tr(context, 'confidence'), "$confianca%"),
+      ];
+
+      final info =
+          especie == null ? null : especiesInfo[especie["classe"].toString()];
+      if (info != null) {
+        campos.addAll([
+          MapEntry(tr(context, 'criteria_mode'), campo(info.modo)),
+          MapEntry(tr(context, 'criteria_diameter'), campo(info.diametro)),
+          MapEntry(tr(context, 'criteria_color'), campo(info.cor)),
+          MapEntry(tr(context, 'criteria_wall'), campo(info.parede)),
+          MapEntry(
+              tr(context, 'criteria_distinctive'), campo(info.caracteristica)),
+        ]);
+      }
+
+      await PdfReportService.gerar(
+        titulo: tr(context, 'report_title_identification'),
+        imagemBytes: bytes,
+        campos: campos,
+        notaRodape: info == null ? null : tr(context, 'criteria_source'),
+      );
+    } finally {
+      if (mounted) setState(() => _gerandoPdf = false);
     }
   }
 
@@ -116,8 +166,8 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
           linha(tr(context, 'criteria_diameter'), campo(info.diametro)),
           linha(tr(context, 'criteria_color'), campo(info.cor)),
           linha(tr(context, 'criteria_wall'), campo(info.parede)),
-          linha(tr(context, 'criteria_distinctive'),
-              campo(info.caracteristica)),
+          linha(
+              tr(context, 'criteria_distinctive'), campo(info.caracteristica)),
           const SizedBox(height: 4),
           Text(
             tr(context, 'criteria_disclaimer'),
@@ -291,8 +341,33 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
                       ),
               ),
             if (especie != null) _fichaCriterios(theme, especie),
+            if (_resultado != null && _erro == null && !_carregando) ...[
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: _gerandoPdf
+                    ? null
+                    : () => _baixarRelatorio(especie, confianca),
+                icon: _gerandoPdf
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.picture_as_pdf_rounded,
+                        color: Color(0xFF22C55E)),
+                label: Text(
+                  tr(context, 'download_report'),
+                  style: const TextStyle(
+                      color: Color(0xFF22C55E), fontWeight: FontWeight.bold),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFF22C55E)),
+                  minimumSize: const Size(double.infinity, 46),
+                ),
+              ),
+            ],
             if (_imagem != null && !_carregando) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               TextButton.icon(
                 onPressed: _selecionarEIdentificar,
                 icon:
