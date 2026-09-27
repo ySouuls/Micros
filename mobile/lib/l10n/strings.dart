@@ -42,9 +42,9 @@ const Map<String, Map<String, String>> _strings = {
   // Home
   'take_photo': {'pt': 'Tirar Foto', 'en': 'Take Photo'},
   'open_gallery': {'pt': 'Abrir Galeria', 'en': 'Open Gallery'},
-  'new_identification_upper': {'pt': 'NOVA IDENTIFICAÇÃO', 'en': 'NEW IDENTIFICATION'},
+  'new_identification_upper': {'pt': 'IDENTIFICAR ESPÉCIE', 'en': 'IDENTIFY SPECIES'},
   'tap_to_start': {'pt': 'Toque para iniciar', 'en': 'Tap to start'},
-  'new_count_upper': {'pt': 'NOVA CONTAGEM', 'en': 'NEW COUNT'},
+  'new_count_upper': {'pt': 'CONTAGEM DE ESPOROS', 'en': 'SPORE COUNT'},
 
   // Histórico
   'history': {'pt': 'Histórico', 'en': 'History'},
