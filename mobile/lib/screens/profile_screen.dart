@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/strings.dart';
 import '../state/app_state.dart';
-import '../widgets/responsive.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -46,8 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         nome.text = nomeSalvo;
         if (fotoValida) {
           _fotoPath = pathFoto;
-          profileImagePathNotifier.value =
-              pathFoto; // Atualiza o notificador global
+          profileImagePathNotifier.value = pathFoto; // Atualiza o notificador global
         }
       });
     }
@@ -60,8 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     setState(() {
       _fotoPath = path;
-      profileImagePathNotifier.value =
-          path; // Atualiza o notificador global instantaneamente
+      profileImagePathNotifier.value = path; // Atualiza o notificador global instantaneamente
     });
   }
 
@@ -165,132 +162,123 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
-        child: ResponsiveBody(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-
-              // Avatar com o botão de câmera embutido (Stack)
-              Center(
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 65,
-                      backgroundColor: const Color(0xFF22C55E),
-                      backgroundImage: profileImageProvider(_fotoPath),
-                      child: _fotoPath == null
-                          ? const Icon(
-                              Icons.person,
-                              size: 70,
-                              color: Colors.white,
-                            )
-                          : null,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: InkWell(
-                        onTap: _exibirOpcoesSelecao,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF22C55E),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              width: 3,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            
+            // Avatar com o botão de câmera embutido (Stack)
+            Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 65,
+                    backgroundColor: const Color(0xFF22C55E),
+                    backgroundImage: profileImageProvider(_fotoPath),
+                    child: _fotoPath == null
+                        ? const Icon(
+                            Icons.person,
+                            size: 70,
                             color: Colors.white,
-                            size: 20,
+                          )
+                        : null,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: InkWell(
+                      onTap: _exibirOpcoesSelecao,
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF22C55E),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            width: 3,
                           ),
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              Wrap(
-                alignment: WrapAlignment.center,
-                children: [
-                  TextButton.icon(
-                    onPressed: _exibirOpcoesSelecao,
-                    icon: const Icon(Icons.photo_camera,
-                        color: Color(0xFF22C55E)),
-                    label: Text(
-                      tr(context, 'change_photo'),
-                      style: const TextStyle(
-                          color: Color(0xFF22C55E),
-                          fontWeight: FontWeight.bold),
-                    ),
                   ),
-                  if (_fotoPath != null)
-                    TextButton.icon(
-                      onPressed: _removerFoto,
-                      icon: const Icon(Icons.delete_outline, color: Colors.red),
-                      label: Text(
-                        tr(context, 'remove_photo'),
-                        style: const TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
-                      ),
-                    ),
                 ],
               ),
+            ),
 
-              const SizedBox(height: 30),
+            const SizedBox(height: 15),
 
-              TextField(
-                controller: nome,
-                decoration: InputDecoration(
-                  labelText: tr(context, 'name'),
-                  prefixIcon: const Icon(Icons.person),
-                  border: OutlineInputBorder(
+            Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                TextButton.icon(
+                  onPressed: _exibirOpcoesSelecao,
+                  icon: const Icon(Icons.photo_camera, color: Color(0xFF22C55E)),
+                  label: Text(
+                    tr(context, 'change_photo'),
+                    style: const TextStyle(color: Color(0xFF22C55E), fontWeight: FontWeight.bold),
+                  ),
+                ),
+                if (_fotoPath != null)
+                  TextButton.icon(
+                    onPressed: _removerFoto,
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    label: Text(
+                      tr(context, 'remove_photo'),
+                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+
+            TextField(
+              controller: nome,
+              decoration: InputDecoration(
+                labelText: tr(context, 'name'),
+                prefixIcon: const Icon(Icons.person),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 35),
+
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF22C55E),
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 35),
-
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF22C55E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  icon: const Icon(Icons.save, color: Colors.white),
-                  label: Text(
-                    tr(context, 'save'),
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () async {
-                    await salvarNome();
-
-                    if (!mounted) return;
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(tr(context, 'profile_updated')),
-                      ),
-                    );
-                  },
+                icon: const Icon(Icons.save, color: Colors.white),
+                label: Text(
+                  tr(context, 'save'),
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
+                onPressed: () async {
+                  await salvarNome();
+
+                  if (!mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(tr(context, 'profile_updated')),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
