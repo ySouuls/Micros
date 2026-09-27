@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../state/app_state.dart';
 import '../widgets/pressable_card.dart';
+import '../widgets/responsive.dart';
 import 'identification_screen.dart';
 import 'history_screen.dart';
 import 'juliano_intro_screen.dart';
@@ -102,101 +103,84 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            Image.asset(
-              "assets/images/logo.png",
-              width: 130,
-            ),
-            const SizedBox(height: 16),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth >= kLargeScreenBreakpoint;
 
-            // Card 1: NOVA IDENTIFICAÇÃO
-            Expanded(
-              child: PressableCard(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const IdentificationScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.photo_camera_rounded,
-                        size: 60,
-                        color: Color(0xFF22C55E),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        tr(context, 'new_identification_upper'),
-                        style: theme.textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        tr(context, 'tap_to_start'),
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
+          final cardIdentificacao = _HomeCard(
+            theme: theme,
+            icon: Icons.photo_camera_rounded,
+            titulo: tr(context, 'new_identification_upper'),
+            subtitulo: tr(context, 'tap_to_start'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const IdentificationScreen(),
                 ),
+              );
+            },
+          );
+
+          final cardContagem = _HomeCard(
+            theme: theme,
+            icon: Icons.calculate_rounded,
+            titulo: tr(context, 'new_count_upper'),
+            subtitulo: tr(context, 'tap_to_start'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const NovaContagemScreen(),
+                ),
+              );
+            },
+          );
+
+          final logo = Image.asset(
+            "assets/images/logo.png",
+            width: isWide ? 150 : 130,
+          );
+
+          final Widget conteudo = isWide
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    logo,
+                    const SizedBox(height: 28),
+                    SizedBox(
+                      height: 300,
+                      child: Row(
+                        children: [
+                          Expanded(child: cardIdentificacao),
+                          const SizedBox(width: 24),
+                          Expanded(child: cardContagem),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    logo,
+                    const SizedBox(height: 16),
+                    Expanded(child: cardIdentificacao),
+                    const SizedBox(height: 16),
+                    Expanded(child: cardContagem),
+                  ],
+                );
+
+          return Center(
+            child: ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxWidth: isWide ? 900 : double.infinity),
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: conteudo,
               ),
             ),
-
-            const SizedBox(height: 16),
-
-            // Card 2: NOVA CONTAGEM
-            Expanded(
-              child: PressableCard(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NovaContagemScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.calculate_rounded,
-                        size: 60,
-                        color: Color(0xFF22C55E),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        tr(context, 'new_count_upper'),
-                        style: theme.textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        tr(context, 'tap_to_start'),
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigationBar: Container(
         height: 80,
@@ -207,74 +191,119 @@ class _HomeScreenState extends State<HomeScreen> {
             topRight: Radius.circular(25),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Botão Histórico com animação
+                PressableCard(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const HistoryScreen(),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Icon(
+                      Icons.history,
+                      color: theme.iconTheme.color,
+                      size: 30,
+                    ),
+                  ),
+                ),
+
+                // Logo central com animação
+                PressableCard(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LogoDetailScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF22C55E),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Image.asset(
+                        "assets/images/logo.png",
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Botão Configurações com animação
+                PressableCard(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SettingsScreen(),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Icon(
+                      Icons.settings,
+                      color: theme.iconTheme.color,
+                      size: 30,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeCard extends StatelessWidget {
+  final ThemeData theme;
+  final IconData icon;
+  final String titulo;
+  final String subtitulo;
+  final VoidCallback onTap;
+
+  const _HomeCard({
+    required this.theme,
+    required this.icon,
+    required this.titulo,
+    required this.subtitulo,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PressableCard(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Botão Histórico com animação
-            PressableCard(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const HistoryScreen(),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Icon(
-                  Icons.history,
-                  color: theme.iconTheme.color,
-                  size: 30,
-                ),
-              ),
-            ),
-
-            // Logo central com animação
-            PressableCard(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LogoDetailScreen(),
-                  ),
-                );
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF22C55E),
-                  shape: BoxShape.circle,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                  ),
-                ),
-              ),
-            ),
-
-            // Botão Configurações com animação
-            PressableCard(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SettingsScreen(),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Icon(
-                  Icons.settings,
-                  color: theme.iconTheme.color,
-                  size: 30,
-                ),
-              ),
-            ),
+            Icon(icon, size: 60, color: const Color(0xFF22C55E)),
+            const SizedBox(height: 12),
+            Text(titulo, style: theme.textTheme.headlineMedium),
+            const SizedBox(height: 6),
+            Text(subtitulo, style: theme.textTheme.bodyMedium),
           ],
         ),
       ),

@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../l10n/strings.dart';
 import '../services/api_service.dart';
 import '../widgets/image_source_sheet.dart';
+import '../widgets/responsive.dart';
 
 Future<Size> _tamanhoDaImagem(XFile imagem) async {
   final bytes = await imagem.readAsBytes();
@@ -84,114 +85,116 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: _selecionarEContar,
-              child: Container(
-                width: double.infinity,
-                height: 320,
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFF22C55E).withOpacity(0.25),
-                    width: 1.5,
-                  ),
-                ),
-                child: _imagem == null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add_photo_alternate_rounded,
-                            size: 70,
-                            color: theme.iconTheme.color?.withOpacity(0.4),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            tr(context, 'tap_to_select_image'),
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ],
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(22),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            _imagemWidget(),
-                            if (deteccoes.isNotEmpty &&
-                                _tamanhoOriginal != null)
-                              Positioned.fill(
-                                child: CustomPaint(
-                                  painter: _CaixasPainter(
-                                      deteccoes, _tamanhoOriginal!),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (_carregando)
-              Column(
-                children: [
-                  const CircularProgressIndicator(color: Color(0xFF22C55E)),
-                  const SizedBox(height: 12),
-                  Text(tr(context, 'counting_spores'),
-                      style: theme.textTheme.bodyMedium),
-                ],
-              ),
-            if (_erro != null)
-              Text(
-                "${tr(context, 'count_error')}: $_erro",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
-              ),
-            if (_resultado != null && _erro == null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: const Color(0xFF22C55E).withOpacity(0.25)),
-                ),
-                child: Column(
-                  children: [
-                    Icon(Icons.calculate_rounded,
-                        color: const Color(0xFF22C55E), size: 34),
-                    const SizedBox(height: 10),
-                    Text(
-                      "$quantidade",
-                      style: const TextStyle(
-                        color: Color(0xFF22C55E),
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
+        child: ResponsiveBody(
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _selecionarEContar,
+                child: Container(
+                  width: double.infinity,
+                  height: 320,
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: const Color(0xFF22C55E).withOpacity(0.25),
+                      width: 1.5,
                     ),
-                    Text(tr(context, 'spores_found'),
+                  ),
+                  child: _imagem == null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_photo_alternate_rounded,
+                              size: 70,
+                              color: theme.iconTheme.color?.withOpacity(0.4),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              tr(context, 'tap_to_select_image'),
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ],
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(22),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              _imagemWidget(),
+                              if (deteccoes.isNotEmpty &&
+                                  _tamanhoOriginal != null)
+                                Positioned.fill(
+                                  child: CustomPaint(
+                                    painter: _CaixasPainter(
+                                        deteccoes, _tamanhoOriginal!),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if (_carregando)
+                Column(
+                  children: [
+                    const CircularProgressIndicator(color: Color(0xFF22C55E)),
+                    const SizedBox(height: 12),
+                    Text(tr(context, 'counting_spores'),
                         style: theme.textTheme.bodyMedium),
                   ],
                 ),
-              ),
-            if (_imagem != null && !_carregando) ...[
-              const SizedBox(height: 20),
-              TextButton.icon(
-                onPressed: _selecionarEContar,
-                icon:
-                    const Icon(Icons.refresh_rounded, color: Color(0xFF22C55E)),
-                label: Text(
-                  tr(context, 'count_another_image'),
-                  style: const TextStyle(
-                      color: Color(0xFF22C55E), fontWeight: FontWeight.bold),
+              if (_erro != null)
+                Text(
+                  "${tr(context, 'count_error')}: $_erro",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red),
                 ),
-              ),
+              if (_resultado != null && _erro == null)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                        color: const Color(0xFF22C55E).withOpacity(0.25)),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(Icons.calculate_rounded,
+                          color: const Color(0xFF22C55E), size: 34),
+                      const SizedBox(height: 10),
+                      Text(
+                        "$quantidade",
+                        style: const TextStyle(
+                          color: Color(0xFF22C55E),
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(tr(context, 'spores_found'),
+                          style: theme.textTheme.bodyMedium),
+                    ],
+                  ),
+                ),
+              if (_imagem != null && !_carregando) ...[
+                const SizedBox(height: 20),
+                TextButton.icon(
+                  onPressed: _selecionarEContar,
+                  icon: const Icon(Icons.refresh_rounded,
+                      color: Color(0xFF22C55E)),
+                  label: Text(
+                    tr(context, 'count_another_image'),
+                    style: const TextStyle(
+                        color: Color(0xFF22C55E), fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

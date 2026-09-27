@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/strings.dart';
+import '../widgets/responsive.dart';
 
 class PrivacyScreen extends StatelessWidget {
   const PrivacyScreen({super.key});
@@ -13,27 +14,34 @@ class PrivacyScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Icon(
-              Icons.privacy_tip_outlined,
-              size: 60,
-              color: Color(0xFF22C55E),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              tr(context, 'privacy_intro'),
-              style: const TextStyle(fontSize: 15, color: Colors.grey),
-            ),
-            const SizedBox(height: 25),
-            _secao(context, 'privacy_data_collected_title', 'privacy_data_collected_body'),
-            _secao(context, 'privacy_data_storage_title', 'privacy_data_storage_body'),
-            _secao(context, 'privacy_third_party_title', 'privacy_third_party_body'),
-            _secao(context, 'privacy_permissions_title', 'privacy_permissions_body'),
-            _secao(context, 'privacy_not_done_title', 'privacy_not_done_body'),
-            _secao(context, 'privacy_rights_title', 'privacy_rights_body'),
-          ],
+        child: ResponsiveBody(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.privacy_tip_outlined,
+                size: 60,
+                color: Color(0xFF22C55E),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                tr(context, 'privacy_intro'),
+                style: const TextStyle(fontSize: 15, color: Colors.grey),
+              ),
+              const SizedBox(height: 25),
+              _secao(context, 'privacy_data_collected_title',
+                  'privacy_data_collected_body'),
+              _secao(context, 'privacy_data_storage_title',
+                  'privacy_data_storage_body'),
+              _secao(context, 'privacy_third_party_title',
+                  'privacy_third_party_body'),
+              _secao(context, 'privacy_permissions_title',
+                  'privacy_permissions_body'),
+              _secao(
+                  context, 'privacy_not_done_title', 'privacy_not_done_body'),
+              _secao(context, 'privacy_rights_title', 'privacy_rights_body'),
+            ],
+          ),
         ),
       ),
     );
