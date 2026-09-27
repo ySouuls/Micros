@@ -52,14 +52,11 @@ const Map<String, Map<String, String>> _strings = {
 
   // Histórico
   'history': {'pt': 'Histórico', 'en': 'History'},
-  'today': {'pt': 'Hoje', 'en': 'Today'},
-  'yesterday': {'pt': 'Ontem', 'en': 'Yesterday'},
-  'last_week': {'pt': 'Última semana', 'en': 'Last week'},
+  'all_analyses': {'pt': 'Todas as análises', 'en': 'All analyses'},
   'no_analysis_done': {
     'pt': 'Nenhuma análise realizada',
     'en': 'No analysis performed'
   },
-  'older': {'pt': 'Mais antigas', 'en': 'Older'},
   'no_history_yet': {
     'pt': 'Nenhuma análise ou contagem feita ainda.',
     'en': 'No analysis or count done yet.',

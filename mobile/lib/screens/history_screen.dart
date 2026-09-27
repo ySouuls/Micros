@@ -27,45 +27,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     await _historico;
   }
 
-  // Agrupa os itens em "Hoje", "Ontem" e "Mais antigas" a partir de data_hora.
-  Map<String, List<List<dynamic>>> _agrupar(List<dynamic> itens) {
-    final hoje = DateTime.now();
-    final grupos = <String, List<List<dynamic>>>{
-      "today": [],
-      "yesterday": [],
-      "older": [],
-    };
-
-    for (final item in itens) {
-      final linha = item as List<dynamic>;
-      final dataHoraTexto = linha.length > 5 ? linha[5]?.toString() : null;
-
-      DateTime? data;
-      if (dataHoraTexto != null) {
-        try {
-          data = DateTime.parse(dataHoraTexto);
-        } catch (_) {
-          data = null;
-        }
-      }
-
-      if (data == null) {
-        grupos["older"]!.add(linha);
-      } else if (_mesmoDia(data, hoje)) {
-        grupos["today"]!.add(linha);
-      } else if (_mesmoDia(data, hoje.subtract(const Duration(days: 1)))) {
-        grupos["yesterday"]!.add(linha);
-      } else {
-        grupos["older"]!.add(linha);
-      }
-    }
-
-    return grupos;
-  }
-
-  bool _mesmoDia(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -97,7 +58,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   const SizedBox(height: 60),
-                  Icon(Icons.wifi_off_rounded, color: theme.iconTheme.color?.withOpacity(0.3), size: 48),
+                  Icon(Icons.wifi_off_rounded,
+                      color: theme.iconTheme.color?.withOpacity(0.3), size: 48),
                   const SizedBox(height: 16),
                   Center(
                     child: Text(
@@ -117,7 +79,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 padding: const EdgeInsets.all(20),
                 children: [
                   const SizedBox(height: 60),
-                  Icon(Icons.history_rounded, color: theme.iconTheme.color?.withOpacity(0.3), size: 48),
+                  Icon(Icons.history_rounded,
+                      color: theme.iconTheme.color?.withOpacity(0.3), size: 48),
                   const SizedBox(height: 16),
                   Center(
                     child: Text(
@@ -130,16 +93,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
               );
             }
 
-            final grupos = _agrupar(itens);
-
             return ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                _grupoTile(context, tr(context, 'today'), grupos["today"]!, Icons.today_rounded, const Color(0xFF22C55E)),
-                const SizedBox(height: 16),
-                _grupoTile(context, tr(context, 'yesterday'), grupos["yesterday"]!, Icons.history_toggle_off_rounded, Colors.orange),
-                const SizedBox(height: 16),
-                _grupoTile(context, tr(context, 'older'), grupos["older"]!, Icons.archive_outlined, Colors.blueGrey),
+                _grupoTile(
+                  context,
+                  tr(context, 'all_analyses'),
+                  itens.map((item) => item as List<dynamic>).toList(),
+                  Icons.history_rounded,
+                  const Color(0xFF22C55E),
+                ),
               ],
             );
           },
@@ -172,14 +135,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
       child: Theme(
         data: theme.copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          initiallyExpanded: true,
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           leading: Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(color: cor.withOpacity(0.15), shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: cor.withOpacity(0.15), shape: BoxShape.circle),
             child: Icon(icon, color: cor),
           ),
-          title: Text(titulo, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          title: Text(titulo,
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold)),
           subtitle: Text(
             itens.isEmpty
                 ? tr(context, 'no_analysis_done')
@@ -205,7 +172,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
       final quantidade = confianca is num ? confianca.toInt() : confianca;
       texto = "$quantidade ${tr(context, 'spores_found')}";
     } else {
-      final confiancaTexto = confianca is num ? confianca.toStringAsFixed(1) : confianca;
+      final confiancaTexto =
+          confianca is num ? confianca.toStringAsFixed(1) : confianca;
       texto = "${classe.replaceAll('_', ' ')} ($confiancaTexto%)";
     }
 
