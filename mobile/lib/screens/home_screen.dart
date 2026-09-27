@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../state/app_state.dart';
@@ -12,7 +11,6 @@ import 'notifications_screen.dart';
 import 'nova_contagem_screen.dart';
 import 'profile_screen.dart';
 import 'settings_screen.dart';
-import 'web_home_screen.dart';
 import '../l10n/strings.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,10 +23,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return const WebHomeScreen();
-    }
-
     final theme = Theme.of(context);
 
     return Scaffold(
