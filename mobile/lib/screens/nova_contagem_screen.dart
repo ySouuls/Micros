@@ -46,6 +46,25 @@ Future<Uint8List> _imagemComCaixas(
       (det["y2"] ?? 0).toDouble(),
     );
     canvas.drawRect(rect, paint);
+
+    final confianca = det["confianca"];
+    if (confianca == null) continue;
+
+    final texto = "$confianca%";
+    final tp = TextPainter(
+      text: TextSpan(
+        text: texto,
+        style: const TextStyle(
+          color: Color(0xFF22C55E),
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+          backgroundColor: Colors.black54,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    tp.layout();
+    tp.paint(canvas, Offset(rect.left, rect.top - tp.height - 2));
   }
 
   final picture = recorder.endRecording();
