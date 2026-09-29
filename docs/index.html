@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MICROS — Acordando o servidor</title>
+<style>
+  :root {
+    --verde: #22C55E;
+    --fundo: #0F172A;
+    --cartao: #1E293B;
+    --texto: #E2E8F0;
+    --texto-fraco: #94A3B8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .cartao {
+    max-width: 420px;
+    width: 100%;
+    background: var(--cartao);
+    border-radius: 24px;
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+
+  .logo {
+    width: 48px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin: 0 0 20px;
+    color: #fff;
+  }
+
+  .juliano {
+    width: 190px;
+    max-width: 70%;
+    margin: 0 auto 20px;
+    display: block;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+    animation: flutuar 3s ease-in-out infinite;
+  }
+
+  @keyframes flutuar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .spinner {
+    width: 26px;
+    height: 26px;
+    border: 3px solid rgba(34, 197, 94, 0.25);
+    border-top-color: var(--verde);
+    border-radius: 50%;
+    margin: 4px auto 18px;
+    animation: girar 0.9s linear infinite;
+  }
+
+  @keyframes girar {
+    to { transform: rotate(360deg); }
+  }
+
+  .mensagem {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    min-height: 22px;
+  }
+
+  .submensagem {
+    font-size: 13px;
+    color: var(--texto-fraco);
+    margin: 0 0 22px;
+    line-height: 1.5;
+  }
+
+  .entrar-mesmo-assim {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--texto-fraco);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--texto-fraco);
+    opacity: 0.7;
+  }
+
+  .entrar-mesmo-assim:hover {
+    opacity: 1;
+    color: var(--verde);
+    border-color: var(--verde);
+  }
+</style>
+</head>
+<body>
+  <div class="cartao">
+    <img class="logo" src="logo.png" alt="MICROS" />
+    <h1>MICROS</h1>
+    <img class="juliano" src="juliano_construcao.png" alt="Juliano trabalhando" />
+    <div class="spinner"></div>
+    <p class="mensagem" id="mensagem">Acordando o servidor…</p>
+    <p class="submensagem" id="submensagem">
+      O Juliano tá ligando tudo aí atrás. Isso pode levar até 1 minuto na primeira visita.
+    </p>
+    <a class="entrar-mesmo-assim" href="https://micros-r4ax.onrender.com/">
+      Entrar mesmo assim
+    </a>
+  </div>
+
+  <script>
+    const DESTINO = "https://micros-r4ax.onrender.com/";
+    const STATUS_URL = "https://micros-r4ax.onrender.com/status";
+
+    const mensagens = [
+      "Acordando o servidor…",
+      "Identificando esporos de paciência…",
+      "Contando micélios…",
+      "Quase lá…",
+    ];
+
+    const elMensagem = document.getElementById("mensagem");
+    const elSub = document.getElementById("submensagem");
+    let indice = 0;
+    let tentativas = 0;
+
+    setInterval(() => {
+      indice = (indice + 1) % mensagens.length;
+      elMensagem.textContent = mensagens[indice];
+    }, 3500);
+
+    async function checarServidor() {
+      tentativas++;
+      try {
+        const resposta = await fetch(STATUS_URL, { cache: "no-store" });
+        if (resposta.ok) {
+          window.location.href = DESTINO;
+          return;
+        }
+      } catch (erro) {
+        // servidor ainda dormindo ou acordando, tenta de novo
+      }
+
+      if (tentativas > 20) {
+        elSub.textContent =
+          "Tá demorando mais que o normal. Pode tentar entrar direto ou aguardar mais um pouco.";
+      }
+
+      setTimeout(checarServidor, 3000);
+    }
+
+    checarServidor();
+  </script>
+</body>
+</html>
