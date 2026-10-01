@@ -163,20 +163,23 @@ class PdfReportService {
         "${(tempoProcessamentoMs / 1000).toStringAsFixed(2).replaceAll('.', ',')} s";
 
     pw.Widget infoItem(String rotulo, String valor) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(
-            rotulo,
-            style: pw.TextStyle(
-              fontSize: 8.5,
-              color: PdfColors.grey600,
-              fontWeight: pw.FontWeight.bold,
+      return pw.SizedBox(
+        width: 115,
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              rotulo,
+              style: pw.TextStyle(
+                fontSize: 7.5,
+                color: PdfColors.grey600,
+                fontWeight: pw.FontWeight.bold,
+              ),
             ),
-          ),
-          pw.SizedBox(height: 2),
-          pw.Text(valor, style: const pw.TextStyle(fontSize: 11)),
-        ],
+            pw.SizedBox(height: 2),
+            pw.Text(valor, style: const pw.TextStyle(fontSize: 9.5)),
+          ],
+        ),
       );
     }
 
@@ -188,19 +191,19 @@ class PdfReportService {
             pw.Container(
               width: double.infinity,
               padding:
-                  const pw.EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                  const pw.EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               decoration: const pw.BoxDecoration(color: _corNavy),
               child: pw.Text(
                 rotulo,
                 style: pw.TextStyle(
                   color: PdfColors.white,
-                  fontSize: 10,
+                  fontSize: 9,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
             ),
             pw.Container(
-              height: 200,
+              height: 125,
               width: double.infinity,
               decoration: pw.BoxDecoration(
                 border: pw.Border.all(color: PdfColors.grey300),
@@ -222,7 +225,7 @@ class PdfReportService {
             width: double.infinity,
             color: _corNavy,
             padding:
-                const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             child: pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               crossAxisAlignment: pw.CrossAxisAlignment.center,
@@ -230,8 +233,8 @@ class PdfReportService {
                 pw.Row(
                   crossAxisAlignment: pw.CrossAxisAlignment.center,
                   children: [
-                    pw.Image(logo, width: 40, height: 40),
-                    pw.SizedBox(width: 12),
+                    pw.Image(logo, width: 32, height: 32),
+                    pw.SizedBox(width: 10),
                     pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
@@ -239,7 +242,7 @@ class PdfReportService {
                           "MICROS",
                           style: pw.TextStyle(
                             color: PdfColors.white,
-                            fontSize: 24,
+                            fontSize: 19,
                             fontWeight: pw.FontWeight.bold,
                           ),
                         ),
@@ -247,7 +250,7 @@ class PdfReportService {
                           "Identificação e contagem de esporos de fungos micorrízicos arbusculares",
                           style: pw.TextStyle(
                             color: PdfColors.grey400,
-                            fontSize: 8.5,
+                            fontSize: 7.5,
                           ),
                         ),
                       ],
@@ -259,7 +262,7 @@ class PdfReportService {
                   textAlign: pw.TextAlign.right,
                   style: pw.TextStyle(
                     color: PdfColors.white,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
@@ -268,14 +271,14 @@ class PdfReportService {
           ),
 
           pw.Padding(
-            padding: const pw.EdgeInsets.all(28),
+            padding: const pw.EdgeInsets.fromLTRB(18, 14, 18, 18),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 // Grade de informações
                 pw.Wrap(
-                  spacing: 28,
-                  runSpacing: 12,
+                  spacing: 14,
+                  runSpacing: 8,
                   children: [
                     infoItem("Data da análise", dataFormatada),
                     infoItem("Hora", horaFormatada),
@@ -285,76 +288,74 @@ class PdfReportService {
                     infoItem("Tempo de processamento", tempoFormatado),
                   ],
                 ),
-                pw.SizedBox(height: 20),
+                pw.SizedBox(height: 10),
 
                 // Cartão de destaque
                 pw.Container(
                   width: double.infinity,
-                  padding: const pw.EdgeInsets.all(18),
+                  padding: const pw.EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10),
                   decoration: pw.BoxDecoration(
                     color: _corVerde,
-                    borderRadius: pw.BorderRadius.circular(10),
+                    borderRadius: pw.BorderRadius.circular(8),
                   ),
                   child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     children: [
-                      pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text(
-                            rotuloDestaque,
-                            style: pw.TextStyle(
-                              color: PdfColors.white,
-                              fontSize: 10,
-                              fontWeight: pw.FontWeight.bold,
+                      pw.Expanded(
+                        child: pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Text(
+                              rotuloDestaque,
+                              style: pw.TextStyle(
+                                color: PdfColors.white,
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          pw.SizedBox(height: 4),
-                          pw.Text(
-                            valorDestaque,
-                            style: pw.TextStyle(
-                              color: PdfColors.white,
-                              fontSize: 26,
-                              fontWeight: pw.FontWeight.bold,
+                            pw.SizedBox(height: 2),
+                            pw.Text(
+                              valorDestaque,
+                              style: pw.TextStyle(
+                                color: PdfColors.white,
+                                fontSize: 18,
+                                fontWeight: pw.FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      pw.Row(
-                        children: estatisticasExtras
-                            .map(
-                              (e) => pw.Padding(
-                                padding: const pw.EdgeInsets.only(left: 22),
-                                child: pw.Column(
-                                  crossAxisAlignment: pw.CrossAxisAlignment.end,
-                                  children: [
-                                    pw.Text(
-                                      e.key,
-                                      style: pw.TextStyle(
-                                        color: PdfColors.white,
-                                        fontSize: 8.5,
-                                      ),
-                                    ),
-                                    pw.SizedBox(height: 2),
-                                    pw.Text(
-                                      e.value,
-                                      style: pw.TextStyle(
-                                        color: PdfColors.white,
-                                        fontSize: 16,
-                                        fontWeight: pw.FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                      ...estatisticasExtras.map(
+                        (e) => pw.Padding(
+                          padding: const pw.EdgeInsets.only(left: 16),
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.end,
+                            children: [
+                              pw.Text(
+                                e.key,
+                                style: pw.TextStyle(
+                                  color: PdfColors.white,
+                                  fontSize: 7.5,
                                 ),
                               ),
-                            )
-                            .toList(),
+                              pw.SizedBox(height: 2),
+                              pw.Text(
+                                e.value,
+                                style: pw.TextStyle(
+                                  color: PdfColors.white,
+                                  fontSize: 14,
+                                  fontWeight: pw.FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                pw.SizedBox(height: 20),
+                pw.SizedBox(height: 10),
 
                 // Imagem(ns)
                 pw.Row(
@@ -367,20 +368,20 @@ class PdfReportService {
                       : [
                           imagemComRotulo(
                               rotuloImagemPrincipal, imagemPrincipal),
-                          pw.SizedBox(width: 12),
+                          pw.SizedBox(width: 10),
                           imagemComRotulo(
                               rotuloImagemSecundaria, imagemSecundaria),
                         ],
                 ),
-                pw.SizedBox(height: 22),
+                pw.SizedBox(height: 12),
 
                 // Tabela de resultados
                 pw.Text(
                   "Resumo dos resultados",
                   style: pw.TextStyle(
-                      fontSize: 12, fontWeight: pw.FontWeight.bold),
+                      fontSize: 10, fontWeight: pw.FontWeight.bold),
                 ),
-                pw.SizedBox(height: 8),
+                pw.SizedBox(height: 4),
                 pw.Table(
                   border: pw.TableBorder.all(color: PdfColors.grey300),
                   columnWidths: const {
@@ -393,20 +394,22 @@ class PdfReportService {
                       children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6),
+                              horizontal: 8, vertical: 4),
                           child: pw.Text("Parâmetro",
+                              textAlign: pw.TextAlign.left,
                               style: pw.TextStyle(
                                   color: PdfColors.white,
-                                  fontSize: 10,
+                                  fontSize: 9,
                                   fontWeight: pw.FontWeight.bold)),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6),
+                              horizontal: 8, vertical: 4),
                           child: pw.Text("Resultado",
+                              textAlign: pw.TextAlign.left,
                               style: pw.TextStyle(
                                   color: PdfColors.white,
-                                  fontSize: 10,
+                                  fontSize: 9,
                                   fontWeight: pw.FontWeight.bold)),
                         ),
                       ],
@@ -419,28 +422,31 @@ class PdfReportService {
                         children: [
                           pw.Padding(
                             padding: const pw.EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 6),
+                                horizontal: 8, vertical: 4),
                             child: pw.Text(campos[i].key,
+                                textAlign: pw.TextAlign.left,
                                 style: pw.TextStyle(
-                                    fontSize: 9.5,
+                                    fontSize: 8.5,
                                     fontWeight: pw.FontWeight.bold)),
                           ),
                           pw.Padding(
                             padding: const pw.EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 6),
+                                horizontal: 8, vertical: 4),
                             child: pw.Text(campos[i].value,
-                                style: const pw.TextStyle(fontSize: 9.5)),
+                                textAlign: pw.TextAlign.left,
+                                style: const pw.TextStyle(fontSize: 8.5)),
                           ),
                         ],
                       ),
                   ],
                 ),
-                pw.SizedBox(height: 20),
+                pw.SizedBox(height: 10),
 
                 // Interpretação
                 pw.Container(
                   width: double.infinity,
-                  padding: const pw.EdgeInsets.all(14),
+                  padding: const pw.EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
                   decoration: pw.BoxDecoration(
                     color: PdfColors.green50,
                     borderRadius: pw.BorderRadius.circular(8),
@@ -452,43 +458,45 @@ class PdfReportService {
                       pw.Text(
                         "Interpretação",
                         style: pw.TextStyle(
-                          fontSize: 10.5,
+                          fontSize: 9.5,
                           fontWeight: pw.FontWeight.bold,
                           color: _corNavy,
                         ),
                       ),
-                      pw.SizedBox(height: 6),
+                      pw.SizedBox(height: 3),
                       pw.Text(interpretacao,
-                          style: const pw.TextStyle(fontSize: 10)),
+                          textAlign: pw.TextAlign.left,
+                          style: const pw.TextStyle(fontSize: 9)),
                     ],
                   ),
                 ),
 
                 if (notaRodape != null) ...[
-                  pw.SizedBox(height: 14),
+                  pw.SizedBox(height: 8),
                   pw.Text(
                     notaRodape,
+                    textAlign: pw.TextAlign.left,
                     style: pw.TextStyle(
-                      fontSize: 8,
+                      fontSize: 7.5,
                       fontStyle: pw.FontStyle.italic,
                       color: PdfColors.grey700,
                     ),
                   ),
                 ],
 
-                pw.SizedBox(height: 22),
+                pw.SizedBox(height: 10),
 
                 // Observações
                 pw.Text(
                   "Observações",
                   style: pw.TextStyle(
-                      fontSize: 11, fontWeight: pw.FontWeight.bold),
+                      fontSize: 10, fontWeight: pw.FontWeight.bold),
                 ),
-                pw.SizedBox(height: 6),
+                pw.SizedBox(height: 4),
                 pw.Container(
                   width: double.infinity,
-                  height: 60,
-                  padding: const pw.EdgeInsets.all(10),
+                  height: 34,
+                  padding: const pw.EdgeInsets.all(8),
                   decoration: pw.BoxDecoration(
                     border: pw.Border.all(color: PdfColors.grey300),
                     borderRadius: pw.BorderRadius.circular(6),
@@ -499,9 +507,9 @@ class PdfReportService {
                         fontSize: 9, color: PdfColors.grey400),
                   ),
                 ),
-                pw.SizedBox(height: 24),
-                pw.Divider(color: PdfColors.grey300),
-                pw.SizedBox(height: 10),
+                pw.SizedBox(height: 12),
+                pw.Divider(color: PdfColors.grey300, thickness: 0.6),
+                pw.SizedBox(height: 8),
 
                 // Rodapé
                 pw.Row(
@@ -511,12 +519,12 @@ class PdfReportService {
                     pw.Row(
                       crossAxisAlignment: pw.CrossAxisAlignment.center,
                       children: [
-                        pw.Image(logo, width: 22, height: 22),
+                        pw.Image(logo, width: 20, height: 20),
                         pw.SizedBox(width: 8),
                         pw.Text(
                           "Relatório gerado automaticamente pelo MICROS.",
                           style: pw.TextStyle(
-                              fontSize: 8.5, color: PdfColors.grey600),
+                              fontSize: 8, color: PdfColors.grey600),
                         ),
                       ],
                     ),
@@ -528,18 +536,19 @@ class PdfReportService {
                           children: [
                             pw.Text("Acesse o MICROS",
                                 style: pw.TextStyle(
-                                    fontSize: 8, color: PdfColors.grey600)),
+                                    fontSize: 7.5, color: PdfColors.grey600)),
                             pw.Text(_urlSite,
                                 style: pw.TextStyle(
-                                    fontSize: 7, color: PdfColors.grey500)),
+                                    fontSize: 6.5, color: PdfColors.grey500)),
                           ],
                         ),
                         pw.SizedBox(width: 8),
                         pw.BarcodeWidget(
                           barcode: pw.Barcode.qrCode(),
                           data: _urlSite,
-                          width: 48,
-                          height: 48,
+                          width: 40,
+                          height: 40,
+                          drawText: false,
                         ),
                       ],
                     ),

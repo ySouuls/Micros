@@ -244,7 +244,15 @@ const Map<String, Map<String, String>> _strings = {
     'en': 'Tap to select an image',
   },
   'counting_spores': {'pt': 'Contando esporos...', 'en': 'Counting spores...'},
-  'spores_found': {'pt': 'esporos encontrados', 'en': 'spores found'},
+  'spores_found': {'pt': 'Esporos encontrados', 'en': 'Spores found'},
+  'report_spore_singular': {
+    'pt': 'esporo detectado nesta amostra',
+    'en': 'spore detected in this sample',
+  },
+  'report_spore_plural': {
+    'pt': 'esporos detectados nesta amostra',
+    'en': 'spores detected in this sample',
+  },
   'count_another_image': {
     'pt': 'Contar outra imagem',
     'en': 'Count another image'

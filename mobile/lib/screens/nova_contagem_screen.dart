@@ -164,7 +164,10 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
         rotuloImagemSecundaria: tr(context, 'report_image_detections'),
         campos: [
           MapEntry(tr(context, 'report_field_file'), _imagem!.name),
-          MapEntry(tr(context, 'spores_found'), "$quantidade"),
+          MapEntry(
+            tr(context, 'spores_found'),
+            "$quantidade ${quantidade == 1 ? tr(context, 'report_spore_singular') : tr(context, 'report_spore_plural')}",
+          ),
           if (confiancas.isNotEmpty)
             MapEntry(tr(context, 'report_average_confidence'),
                 "${confiancaMedia.toStringAsFixed(1)}%"),
