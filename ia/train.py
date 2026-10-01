@@ -7,8 +7,10 @@ modelo = YOLO("yolo11n-cls.pt")
 
 resultados = modelo.train(
     data="ia/dataset_especies",
-    epochs=30,
+    epochs=60,
+    patience=15,
     imgsz=224,
+    dropout=0.3,
     project="ia/results",
     name="especies_fma",
     exist_ok=True,
