@@ -309,6 +309,33 @@ const Map<String, Map<String, String>> _strings = {
   },
   'report_field_file': {'pt': 'Arquivo', 'en': 'File'},
   'report_field_result': {'pt': 'Resultado', 'en': 'Result'},
+  'report_image_analyzed': {'pt': 'Imagem analisada', 'en': 'Analyzed image'},
+  'report_image_original': {'pt': 'Imagem original', 'en': 'Original image'},
+  'report_image_detections': {
+    'pt': 'Imagem com detecções',
+    'en': 'Image with detections',
+  },
+  'report_interpretation_identified_prefix': {
+    'pt': 'A espécie foi identificada como',
+    'en': 'The species was identified as',
+  },
+  'report_interpretation_identified_suffix': {
+    'pt': 'com confiança de',
+    'en': 'with a confidence of',
+  },
+  'report_interpretation_count': {
+    'pt': 'Foram identificados',
+    'en': 'A total of',
+  },
+  'report_interpretation_count_suffix': {
+    'pt': 'esporos na imagem analisada, com confiança média de',
+    'en':
+        'spores were identified in the analyzed image, with an average confidence of',
+  },
+  'report_average_confidence': {
+    'pt': 'Confiança média',
+    'en': 'Average confidence',
+  },
 
   // Chat Juliano
   'skip': {'pt': 'PULAR', 'en': 'SKIP'},

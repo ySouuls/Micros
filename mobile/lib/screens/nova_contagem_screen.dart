@@ -92,6 +92,7 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
   bool _gerandoPdf = false;
   String? _erro;
   Map<String, dynamic>? _resultado;
+  int _tempoProcessamentoMs = 0;
 
   Future<void> _selecionarEContar() async {
     final foto = await selecionarImagem(context);
@@ -107,11 +108,14 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
 
     try {
       final tamanho = await _tamanhoDaImagem(foto);
+      final cronometro = Stopwatch()..start();
       final resultado = await _api.contarFungos(foto);
+      cronometro.stop();
       if (!mounted) return;
       setState(() {
         _tamanhoOriginal = tamanho;
         _resultado = resultado;
+        _tempoProcessamentoMs = cronometro.elapsedMilliseconds;
         _carregando = false;
       });
     } catch (e) {
@@ -129,17 +133,48 @@ class _NovaContagemScreenState extends State<NovaContagemScreen> {
     setState(() => _gerandoPdf = true);
     try {
       final bytesOriginais = await _imagem!.readAsBytes();
-      final bytesFinais = (deteccoes.isNotEmpty && _tamanhoOriginal != null)
+      final temCaixas = deteccoes.isNotEmpty && _tamanhoOriginal != null;
+      final bytesAnotados = temCaixas
           ? await _imagemComCaixas(bytesOriginais, _tamanhoOriginal!, deteccoes)
-          : bytesOriginais;
+          : null;
 
-      await PdfReportService.gerar(
+      final confiancas = deteccoes
+          .map((d) => (d["confianca"] as num?)?.toDouble())
+          .whereType<double>()
+          .toList();
+      final confiancaMedia = confiancas.isEmpty
+          ? 0
+          : confiancas.reduce((a, b) => a + b) / confiancas.length;
+
+      await PdfReportService.gerarCompleto(
         titulo: tr(context, 'report_title_count'),
-        imagemBytes: bytesFinais,
+        arquivoNome: _imagem!.name,
+        tempoProcessamentoMs: _tempoProcessamentoMs,
+        valorDestaque: "$quantidade",
+        rotuloDestaque: tr(context, 'spores_found'),
+        estatisticasExtras: confiancas.isEmpty
+            ? []
+            : [
+                MapEntry(tr(context, 'report_average_confidence'),
+                    "${confiancaMedia.toStringAsFixed(1)}%"),
+              ],
+        imagemPrincipalBytes: bytesOriginais,
+        imagemSecundariaBytes: bytesAnotados,
+        rotuloImagemPrincipal: tr(context, 'report_image_original'),
+        rotuloImagemSecundaria: tr(context, 'report_image_detections'),
         campos: [
           MapEntry(tr(context, 'report_field_file'), _imagem!.name),
           MapEntry(tr(context, 'spores_found'), "$quantidade"),
+          if (confiancas.isNotEmpty)
+            MapEntry(tr(context, 'report_average_confidence'),
+                "${confiancaMedia.toStringAsFixed(1)}%"),
         ],
+        interpretacao: confiancas.isEmpty
+            ? "${tr(context, 'report_interpretation_count')} $quantidade "
+                "${tr(context, 'spores_found')}."
+            : "${tr(context, 'report_interpretation_count')} $quantidade "
+                "${tr(context, 'report_interpretation_count_suffix')} "
+                "${confiancaMedia.toStringAsFixed(1)}%.",
       );
     } finally {
       if (mounted) setState(() => _gerandoPdf = false);

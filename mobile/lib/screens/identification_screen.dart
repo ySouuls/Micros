@@ -25,6 +25,7 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
   bool _gerandoPdf = false;
   String? _erro;
   Map<String, dynamic>? _resultado;
+  int _tempoProcessamentoMs = 0;
 
   Future<void> _selecionarEIdentificar() async {
     final foto = await selecionarImagem(context);
@@ -38,10 +39,13 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
     });
 
     try {
+      final cronometro = Stopwatch()..start();
       final resultado = await _api.identificarImagem(foto);
+      cronometro.stop();
       if (!mounted) return;
       setState(() {
         _resultado = resultado;
+        _tempoProcessamentoMs = cronometro.elapsedMilliseconds;
         _carregando = false;
       });
     } catch (e) {
@@ -90,10 +94,27 @@ class _IdentificationScreenState extends State<IdentificationScreen> {
         ]);
       }
 
-      await PdfReportService.gerar(
+      final interpretacao = especie == null
+          ? tr(context, 'no_species_identified')
+          : "${tr(context, 'report_interpretation_identified_prefix')} "
+              "${especie["classe"].toString().replaceAll('_', ' ')} "
+              "${tr(context, 'report_interpretation_identified_suffix')} $confianca%.";
+
+      await PdfReportService.gerarCompleto(
         titulo: tr(context, 'report_title_identification'),
-        imagemBytes: bytes,
+        arquivoNome: _imagem!.name,
+        tempoProcessamentoMs: _tempoProcessamentoMs,
+        valorDestaque: especie == null
+            ? tr(context, 'no_species_identified')
+            : especie["classe"].toString().replaceAll('_', ' '),
+        rotuloDestaque: tr(context, 'report_field_result'),
+        estatisticasExtras: especie == null
+            ? []
+            : [MapEntry(tr(context, 'confidence'), "$confianca%")],
+        imagemPrincipalBytes: bytes,
+        rotuloImagemPrincipal: tr(context, 'report_image_analyzed'),
         campos: campos,
+        interpretacao: interpretacao,
         notaRodape: info == null ? null : tr(context, 'criteria_source'),
       );
     } finally {
